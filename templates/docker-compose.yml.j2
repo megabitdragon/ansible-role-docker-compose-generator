@@ -55,6 +55,12 @@ services:
       - {{ port }}
 {% endfor %}
 {% endif %}
+{% if container.networks is defined %}
+    networks:
+{% for network in container.networks %}
+    - {{ network }}
+{% endfor %}
+{% endif %}
 {% if ( container.environment is defined ) or ( container.include_global_env_vars is defined and container.include_global_env_vars) %}
     environment:
 {% if container.include_global_env_vars | default(false) %}
