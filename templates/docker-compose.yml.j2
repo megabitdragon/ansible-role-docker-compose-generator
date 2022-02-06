@@ -58,7 +58,12 @@ services:
 {% if container.networks is defined %}
     networks:
 {% for network in container.networks %}
-    - {{ network }}
+{% if network.ipv4_address is defined %}
+      {{ network.name }}:
+        ipv4_address: {{ network.ipv4_address}}
+{% else %}
+      - {{ network.name }}
+{% endif %}
 {% endfor %}
 {% endif %}
 {% if ( container.environment is defined ) or ( container.include_global_env_vars is defined and container.include_global_env_vars) %}
@@ -88,9 +93,7 @@ services:
 {% endif %}
 {% if container.command is defined %}
     command:
-{% for command in container.command %}
-      - {{ command }}
-{% endfor %}
+      {{ container.command }}
 {% endif %}
 {% if container.security_opt is defined %}
     security_opt:
@@ -118,3 +121,10 @@ services:
 {% endif %}
 {% endif %}
 {% endfor %}
+{% if networks is defined%}
+networks:
+{% for network in networks %}
+  {{ network.name }}:
+    external: {{ network.external }}
+{% endfor %}
+{% endif %}
